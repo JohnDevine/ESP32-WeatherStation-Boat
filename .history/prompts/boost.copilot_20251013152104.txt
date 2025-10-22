@@ -1,0 +1,1 @@
+Make sure to include versioning. For Author use "john.h.devine@gmail.com"  then show me what you propose doing. Do not do anything yet.First, boost this prompt with the prompt boost tool

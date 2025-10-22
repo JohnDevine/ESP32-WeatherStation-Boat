@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en">
+<head>
+  <meta charset="utf-8" />
+        <!-- Global site tag (gtag.js) - Google Analytics -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-73KGWFC8DM"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+
+            gtag('config', 'G-73KGWFC8DM');
+        </script><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>System - ESP32 -  &mdash; ESP-IDF Programming Guide latest documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=a60756f2" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=949a1ff5" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/theme_overrides.css?v=851bd809" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/js/chatbot_widget.css?v=3106ea3a" />
+
+  
+    <link rel="canonical" href="https://docs.espressif.com/projects/esp-idf/en/stable/esp32/migration-guides/release-6.x/6.0/system.html" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=becddca3"></script>
+        <script src="../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
+        <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+        <script src="../../../_static/copybutton.js?v=ff8fa330"></script>
+        <script src="https://wavedrom.com/skins/default.js"></script>
+        <script src="https://wavedrom.com/wavedrom.min.js"></script>
+        <script src="../../../_static/js/chatbot_widget_en.js?v=63d6728d"></script>
+    <script src="../../../_static/js/theme.js"></script>
+
+    
+        
+
+    <script type="text/javascript">
+        DOCUMENTATION_OPTIONS.PAGENAME = 'migration-guides/release-6.x/6.0/system';
+        DOCUMENTATION_OPTIONS.PROJECT_SLUG = 'esp-idf';
+        DOCUMENTATION_OPTIONS.LATEST_BRANCH_NAME = 'master';
+        DOCUMENTATION_OPTIONS.VERSIONS_URL = 'https://dl.espressif.com/dl/esp-idf/idf_versions.js';
+        DOCUMENTATION_OPTIONS.LANGUAGES = ["en", "zh_CN"];
+        DOCUMENTATION_OPTIONS.IDF_TARGET = 'esp32';
+        DOCUMENTATION_OPTIONS.HAS_IDF_TARGETS = ["esp32", "esp32s2", "esp32s3", "esp32c3", "esp32c2", "esp32c5", "esp32c6", "esp32p4"]
+        DOCUMENTATION_OPTIONS.RELEASE = 'latest';
+        DOCUMENTATION_OPTIONS.LANGUAGE_URL = 'en';
+
+    </script>
+
+    <script type="text/javascript" src="https://dl.espressif.com/dl/esp-idf/idf_versions.js"></script>
+    <link rel="author" title="About these documents" href="../../../about.html" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="Toolchain" href="toolchain.html" />
+    <link rel="prev" title="Tools" href="tools.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            ESP-IDF Programming Guide
+              <img src="../../../_static/espressif-logo.svg" class="logo" alt="Logo"/>
+          </a>
+
+          
+            <div class="selectors">
+              <select id="target-select" style="width: 150px;" hidden>
+                <option value="" disabled selected>Choose target...</option>
+              </select>
+            </div>
+          
+
+          <div class="selectors">
+            <select id="version-select" style="width: 150px;" hidden>
+              <option value="" disabled selected>Choose version...</option>
+            </select>
+          </div>
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../get-started/index.html">Get Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api-reference/index.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../hw-reference/index.html">Hardware Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api-guides/index.html">API Guides</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../security/index.html">Security Guides</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../index.html">Migration Guides</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../index.html#esp-idf-5-x-migration-guide">ESP-IDF 5.x Migration Guide</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../../index.html#esp-idf-6-x-migration-guide">ESP-IDF 6.x Migration Guide</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="index.html">Migration from 5.5 to 6.0</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="build-system.html">Build System</a></li>
+<li class="toctree-l4"><a class="reference internal" href="peripherals.html">Peripherals</a></li>
+<li class="toctree-l4"><a class="reference internal" href="provisioning.html">Provisioning</a></li>
+<li class="toctree-l4"><a class="reference internal" href="protocols.html">ESP-Modbus</a></li>
+<li class="toctree-l4"><a class="reference internal" href="security.html">Security</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tools.html">Tools</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">System</a></li>
+<li class="toctree-l4"><a class="reference internal" href="toolchain.html">Toolchain</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../libraries-and-frameworks/index.html">Libraries and Frameworks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contribute/index.html">Contributions Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../versions.html">ESP-IDF Versions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../resources.html">Resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../COPYRIGHT.html">Copyrights and Licenses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about.html">About</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../languages.html">Switch Between Languages</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">ESP-IDF Programming Guide</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Migration Guides</a></li>
+          <li class="breadcrumb-item"><a href="index.html">Migration from 5.5 to 6.0</a></li>
+      <li class="breadcrumb-item active">System</li>
+      <li class="wy-breadcrumbs-aside">
+              <a href="https://github.com/espressif/esp-idf/blob/758939ca/docs/en/migration-guides/release-6.x/6.0/system.rst" class="fa fa-github"> Edit on GitHub</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="system">
+<h1>System<a class="headerlink" href="#system" title="Permalink to this heading"></a></h1>
+<p><a class="reference external" href="../../../../../../zh_CN/latest/esp32/migration-guides/release-6.x/6.0/system.html">[中文]</a></p>
+<section id="xtensa">
+<h2>Xtensa<a class="headerlink" href="#xtensa" title="Permalink to this heading"></a></h2>
+<p>The Xtensa special register header files have been updated to use a new naming convention. The old <code class="docutils literal notranslate"><span class="pre">specreg.h</span></code> header files are now deprecated and will be removed in a future release.</p>
+<p>The register names have been updated to use the <code class="docutils literal notranslate"><span class="pre">XT_REG_</span></code> prefix. Please use the new <code class="docutils literal notranslate"><span class="pre">xt_specreg.h</span></code> file instead.</p>
+</section>
+<section id="power-management">
+<h2>Power Management<a class="headerlink" href="#power-management" title="Permalink to this heading"></a></h2>
+<p>In previous versions of ESP-IDF, the API <a class="reference internal" href="../../../api-reference/system/sleep_modes.html#_CPPv426esp_sleep_get_wakeup_causev" title="esp_sleep_get_wakeup_cause"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">esp_sleep_get_wakeup_cause()</span></code></a> was used to retrieve the wakeup reason after the chip exited sleep. However, this function only returns one wakeup source, even if multiple sources were triggered simultaneously, which may cause users to miss other active wakeup events.</p>
+<p>Since ESP-IDF v6.0, a new API <a class="reference internal" href="../../../api-reference/system/sleep_modes.html#_CPPv427esp_sleep_get_wakeup_causesv" title="esp_sleep_get_wakeup_causes"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">esp_sleep_get_wakeup_causes()</span></code></a> has been introduced. This function returns a bitmap representing all wakeup sources that caused the chip to exit sleep. Each bit corresponds to a value in the <a class="reference internal" href="../../../api-reference/system/sleep_modes.html#_CPPv424esp_sleep_wakeup_cause_t" title="esp_sleep_wakeup_cause_t"><code class="xref cpp cpp-type docutils literal notranslate"><span class="pre">esp_sleep_wakeup_cause_t</span></code></a> enum (e.g., ESP_SLEEP_WAKEUP_TIMER, ESP_SLEEP_WAKEUP_EXT1, etc.). Users can check each wakeup source using bitwise operations.</p>
+<p>The original <a class="reference internal" href="../../../api-reference/system/sleep_modes.html#_CPPv426esp_sleep_get_wakeup_causev" title="esp_sleep_get_wakeup_cause"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">esp_sleep_get_wakeup_cause()</span></code></a> function has been marked as deprecated, and it is recommended to migrate to the new interface. This legacy API may be removed in future versions. Migration can be performed as shown in the example below:</p>
+<p>Old Version:</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">esp_sleep_wakeup_cause_t</span><span class="w"> </span><span class="n">cause</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">esp_sleep_get_wakeup_cause</span><span class="p">();</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">cause</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">ESP_SLEEP_WAKEUP_EXT1</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">handle_ext1_wakeup</span><span class="p">();</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Update to:</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">causes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">esp_sleep_get_wakeup_causes</span><span class="p">();</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">causes</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">BIT</span><span class="p">(</span><span class="n">ESP_SLEEP_WAKEUP_EXT1</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">handle_ext1_wakeup</span><span class="p">();</span>
+<span class="p">}</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">causes</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">BIT</span><span class="p">(</span><span class="n">ESP_SLEEP_WAKEUP_TIMER</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">handle_timer_wakeup</span><span class="p">();</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="bootloader">
+<h2>Bootloader<a class="headerlink" href="#bootloader" title="Permalink to this heading"></a></h2>
+<p>Removed option for compiling bootloader with no optimization level (-O0, <cite>CONFIG_BOOTLOADER_COMPILER_OPTIMIZATION_NONE</cite>). On most targets it was no longer possible to compile the bootloader with -O0, as IRAM sections would overflow. For debugging purposes, it is recommended to use the -Og (<a class="reference internal" href="../../../api-reference/kconfig-reference.html#config-bootloader-compiler-optimization-debug"><span class="std std-ref">CONFIG_BOOTLOADER_COMPILER_OPTIMIZATION_DEBUG</span></a>) optimization level instead. This provides a good balance between optimization and debuggability.</p>
+</section>
+<section id="time">
+<h2>Time<a class="headerlink" href="#time" title="Permalink to this heading"></a></h2>
+<ul class="simple">
+<li><p>The deprecated <code class="docutils literal notranslate"><span class="pre">ESP32/rtc.h</span></code> header file has been removed. Please include the replacement <code class="docutils literal notranslate"><span class="pre">esp_rtc_time.h</span></code> instead.</p></li>
+<li><p>The deprecated <code class="docutils literal notranslate"><span class="pre">RTC_CLK_SRC_INT_RC32K</span></code> menuconfig option has been removed. Internal RC32K clock is unstable at extreme temperatures, please don't use this clock as the RTC slow clock source.</p></li>
+</ul>
+</section>
+<section id="hw-support">
+<h2>HW-Support<a class="headerlink" href="#hw-support" title="Permalink to this heading"></a></h2>
+<p>The deprecated <code class="docutils literal notranslate"><span class="pre">soc_memory_types.h</span></code> header file has been removed. Please include the replacement <code class="docutils literal notranslate"><span class="pre">esp_memory_utils.h</span></code> instead.</p>
+</section>
+<section id="app-trace">
+<h2>App Trace<a class="headerlink" href="#app-trace" title="Permalink to this heading"></a></h2>
+<p>Removed extra data buffering option. <cite>CONFIG_APPTRACE_PENDING_DATA_SIZE_MAX</cite> is no longer supported.</p>
+<p>Removed deprecated <cite>ESP_APPTRACE_DEST_TRAX</cite> enum value. Use <cite>ESP_APPTRACE_DEST_JTAG</cite> instead.</p>
+<p>The <a class="reference internal" href="../../../api-reference/system/app_trace.html#_CPPv431esp_apptrace_down_buffer_config19esp_apptrace_dest_tP7uint8_t8uint32_t" title="esp_apptrace_down_buffer_config"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">esp_apptrace_down_buffer_config()</span></code></a> function now requires a destination parameter and returns an error code for proper error handling.</p>
+<p>Old Version:</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">esp_apptrace_down_buffer_config</span><span class="p">(</span><span class="n">down_buf</span><span class="p">,</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">down_buf</span><span class="p">));</span>
+</pre></div>
+</div>
+<p>Update to:</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">esp_err_t</span><span class="w"> </span><span class="n">res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">esp_apptrace_down_buffer_config</span><span class="p">(</span><span class="n">ESP_APPTRACE_DEST_JTAG</span><span class="p">,</span><span class="w"> </span><span class="n">down_buf</span><span class="p">,</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">down_buf</span><span class="p">));</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">res</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">ESP_OK</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">ESP_LOGE</span><span class="p">(</span><span class="n">TAG</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Failed to config down buffer!&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">res</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="freertos">
+<h2>FreeRTOS<a class="headerlink" href="#freertos" title="Permalink to this heading"></a></h2>
+<p><strong>Removed Functions</strong></p>
+<p>The following deprecated FreeRTOS functions have been removed in ESP-IDF v6.0:</p>
+<ul class="simple">
+<li><p><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">xTaskGetAffinity()</span></code> – Use <a class="reference internal" href="../../../api-reference/system/freertos_additions.html#_CPPv414xTaskGetCoreID12TaskHandle_t" title="xTaskGetCoreID"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">xTaskGetCoreID()</span></code></a> instead.</p></li>
+<li><p><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">xTaskGetIdleTaskHandleForCPU()</span></code> – Use <code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">xTaskGetIdleTaskHandleForCore()</span></code> instead.</p></li>
+<li><p><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">xTaskGetCurrentTaskHandleForCPU()</span></code> – Use <a class="reference internal" href="../../../api-reference/system/freertos_additions.html#_CPPv432xTaskGetCurrentTaskHandleForCore10BaseType_t" title="xTaskGetCurrentTaskHandleForCore"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">xTaskGetCurrentTaskHandleForCore()</span></code></a> instead.</p></li>
+</ul>
+<p>The following compatibility functions have been removed in ESP-IDF v6.0. These functions were maintained for backward compatibility with previous ESP-IDF versions as they were changed to either macros or separate functions in FreeRTOS. This compatibility has been removed.</p>
+<ul class="simple">
+<li><p><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">xQueueGenericReceive()</span></code> - Use <a class="reference internal" href="../../../api-reference/system/freertos_idf.html#_CPPv413xQueueReceive13QueueHandle_tPCv10TickType_t" title="xQueueReceive"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">xQueueReceive()</span></code></a>, <a class="reference internal" href="../../../api-reference/system/freertos_idf.html#_CPPv410xQueuePeek13QueueHandle_tPCv10TickType_t" title="xQueuePeek"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">xQueuePeek()</span></code></a>, or <code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">xQueueSemaphoreTake()</span></code> instead, depending on your use case.</p></li>
+<li><p><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">vTaskDelayUntil()</span></code> - Use <a class="reference internal" href="../../../api-reference/system/freertos_idf.html#_CPPv415xTaskDelayUntilPC10TickType_tK10TickType_t" title="xTaskDelayUntil"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">xTaskDelayUntil()</span></code></a> instead</p></li>
+<li><p><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">ulTaskNotifyTake()</span></code> - Use the macro <code class="docutils literal notranslate"><span class="pre">ulTaskNotifyTake</span></code> instead</p></li>
+<li><p><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">xTaskNotifyWait()</span></code> - Use the macro <code class="docutils literal notranslate"><span class="pre">xTaskNotifyWait</span></code> instead</p></li>
+</ul>
+<p><strong>Deprecated Functions</strong></p>
+<p>The function <code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">pxTaskGetStackStart()</span></code> has been deprecated. Use <a class="reference internal" href="../../../api-reference/system/freertos_additions.html#_CPPv418xTaskGetStackStart12TaskHandle_t" title="xTaskGetStackStart"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">xTaskGetStackStart()</span></code></a> instead for improved type safety.</p>
+<p><strong>Memory Placement</strong></p>
+<p>To reduce IRAM usage, the default placement for most FreeRTOS functions has been changed from IRAM to Flash. Consequently, the <code class="docutils literal notranslate"><span class="pre">CONFIG_FREERTOS_PLACE_FUNCTIONS_INTO_FLASH</span></code> option has been removed. This change saves a significant amount of IRAM but may have a slight performance impact. For performance-critical applications, the previous behavior can be restored by enabling the new <a class="reference internal" href="../../../api-reference/kconfig-reference.html#config-freertos-in-iram"><span class="std std-ref">CONFIG_FREERTOS_IN_IRAM</span></a> option.
+When deciding whether to enable <code class="docutils literal notranslate"><span class="pre">CONFIG_FREERTOS_IN_IRAM</span></code>, consider conducting performance testing to measure the actual impact on your specific use case. Performance differences between Flash and IRAM configurations can vary depending on flash cache efficiency, API usage patterns, and system load.
+A baseline performance test is provided in <code class="docutils literal notranslate"><span class="pre">components/freertos/test_apps/freertos/performance/test_freertos_api_performance.c</span></code> that measures the execution time of commonly used FreeRTOS APIs. This test can help you evaluate the performance impact of memory placement for your target hardware and application requirements.</p>
+</section>
+<section id="ring-buffer">
+<h2>Ring Buffer<a class="headerlink" href="#ring-buffer" title="Permalink to this heading"></a></h2>
+<p><strong>Memory Placement</strong></p>
+<p>To reduce IRAM usage, the default placement for <cite>esp_ringbuf</cite> functions has been changed from IRAM to Flash. Consequently, the <code class="docutils literal notranslate"><span class="pre">CONFIG_RINGBUF_PLACE_FUNCTIONS_INTO_FLASH</span></code> option has been removed. This change saves a significant amount of IRAM but may have a slight performance impact. For performance-critical applications, the previous behavior can be restored by enabling the new <a class="reference internal" href="../../../api-reference/kconfig-reference.html#config-ringbuf-in-iram"><span class="std std-ref">CONFIG_RINGBUF_IN_IRAM</span></a> option.</p>
+</section>
+<section id="log">
+<h2>Log<a class="headerlink" href="#log" title="Permalink to this heading"></a></h2>
+<p><strong>Removed Functions</strong></p>
+<p>The following deprecated Log functions have been removed in ESP-IDF v6.0:</p>
+<ul class="simple">
+<li><p><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">esp_log_buffer_hex()</span></code> - Use <code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">ESP_LOG_BUFFER_HEX()</span></code> instead.</p></li>
+<li><p><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">esp_log_buffer_char()</span></code> - Use <code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">ESP_LOG_BUFFER_CHAR()</span></code> instead.</p></li>
+</ul>
+<p><strong>Removed Headers</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">esp_log_internal.h</span></code> - Use <code class="docutils literal notranslate"><span class="pre">esp_log_buffer.h</span></code> instead.</p></li>
+</ul>
+</section>
+<section id="core-dump">
+<h2>Core Dump<a class="headerlink" href="#core-dump" title="Permalink to this heading"></a></h2>
+<p>Binary data format has been dropped. <cite>CONFIG_ESP_COREDUMP_DATA_FORMAT_BIN</cite> is no longer supported. ELF is now the default data format.</p>
+<p>CRC data integrity check has been dropped. <cite>ESP_COREDUMP_CHECKSUM_CRC32</cite> is no longer supported. SHA256 is now the default checksum algorithm.</p>
+<p>The function <code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">esp_core_dump_partition_and_size_get()</span></code> now returns <cite>ESP_ERR_NOT_FOUND</cite> for blank (erased) partitions instead of <cite>ESP_ERR_INVALID_SIZE</cite>.</p>
+</section>
+<section id="ota-updates">
+<h2>OTA Updates<a class="headerlink" href="#ota-updates" title="Permalink to this heading"></a></h2>
+<p>The partial download functionality in ESP HTTPS OTA has been moved under a configuration option in order to reduce the memory footprint if partial download is not used.</p>
+<p>To use partial download features in your OTA applications, you need to enable the component-level configuration <a class="reference internal" href="../../../api-reference/kconfig-reference.html#config-esp-https-ota-enable-partial-download"><span class="std std-ref">CONFIG_ESP_HTTPS_OTA_ENABLE_PARTIAL_DOWNLOAD</span></a> in menuconfig (<code class="docutils literal notranslate"><span class="pre">Component</span> <span class="pre">config</span></code> → <code class="docutils literal notranslate"><span class="pre">ESP</span> <span class="pre">HTTPS</span> <span class="pre">OTA</span></code> → <code class="docutils literal notranslate"><span class="pre">Enable</span> <span class="pre">partial</span> <span class="pre">HTTP</span> <span class="pre">download</span> <span class="pre">for</span> <span class="pre">OTA</span></code>).</p>
+</section>
+<section id="gcov">
+<h2>Gcov<a class="headerlink" href="#gcov" title="Permalink to this heading"></a></h2>
+<p>The gcov component has been moved to a separate repository. <a class="reference external" href="https://components.espressif.com/components/espressif/esp_gcov">esp_gcov</a>  is now a managed component.</p>
+<p><strong>Component Dependency</strong></p>
+<p>Projects using gcov functionality must now add the esp_gcov component as a dependency in their <code class="docutils literal notranslate"><span class="pre">idf_component.yml</span></code> manifest file:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">dependencies</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">espressif/esp_gcov</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">^1</span>
+</pre></div>
+</div>
+<p><strong>Configuration Changes</strong></p>
+<p>The gcov configuration options have moved from the Application Level Tracing menu to a dedicated <code class="docutils literal notranslate"><span class="pre">GNU</span> <span class="pre">Code</span> <span class="pre">Coverage</span></code> menu section.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">CONFIG_APPTRACE_GCOV_ENABLE</span></code> option has been renamed to <code class="docutils literal notranslate"><span class="pre">CONFIG_ESP_GCOV_ENABLE</span></code>.</p>
+<p><strong>Header File Changes</strong></p>
+<p>For the gcov functionality, include the <code class="docutils literal notranslate"><span class="pre">esp_gcov.h</span></code> header file instead of <code class="docutils literal notranslate"><span class="pre">esp_app_trace.h</span></code>.</p>
+</section>
+</section>
+
+    <script type="text/javascript">
+        function init() {
+            WaveDrom.ProcessAll();
+        }
+        window.onload = init;
+    </script>
+
+           </div>
+             <div class="articleComments">
+
+<style>
+    .expand-feedback-content {
+        display: none;
+    }
+    .click-like-or-dislike {
+        background-color: #d3d3d3;
+        pointer-events: none;
+    }
+</style>
+
+<script>
+    function submitFeedbackForm(user_likes_document) {
+        // Send to GA4 the user reaction
+        gtag('event', 'user_reaction', {
+            'user_likes_document': user_likes_document
+        });
+
+        if (user_likes_document === 1) {
+            document.querySelector('.like-btn').classList.add('click-like-or-dislike');
+            document.getElementById("expandContentLike").style.display = 'block';
+        } else {
+            document.querySelector('.dislike-btn').classList.add('click-like-or-dislike');
+            document.getElementById("expandContent").style.display = 'block';
+        }
+
+        document.querySelector('.like-btn').style.pointerEvents = 'none';
+        document.querySelector('.dislike-btn').style.pointerEvents = 'none';
+    }
+</script>
+
+<hr>
+
+<p style="text-align:center"><strong>Was this page helpful?</strong></p>
+<p style="text-align:center">
+    <button class="like-btn" onclick="submitFeedbackForm(1)">
+        <svg aria-hidden="true" focusable="false" class="color-fg-muted" viewBox="0 0 16 16" width="16" height="16" fill="currentColor" style="display:inline-block;user-select:none;vertical-align:text-bottom;overflow:visible">
+            <path d="M8.834.066c.763.087 1.5.295 2.01.884.505.581.656 1.378.656 2.3 0 .467-.087 1.119-.157 1.637L11.328 5h1.422c.603 0 1.174.085 1.668.333.508.254.911.679 1.137 1.2.453.998.438 2.447.188 4.316l-.04.306c-.105.79-.195 1.473-.313 2.033-.131.63-.315 1.209-.668 1.672C13.97 15.847 12.706 16 11 16c-1.848 0-3.234-.333-4.388-.653-.165-.045-.323-.09-.475-.133-.658-.186-1.2-.34-1.725-.415A1.75 1.75 0 0 1 2.75 16h-1A1.75 1.75 0 0 1 0 14.25v-7.5C0 5.784.784 5 1.75 5h1a1.75 1.75 0 0 1 1.514.872c.258-.105.59-.268.918-.508C5.853 4.874 6.5 4.079 6.5 2.75v-.5c0-1.202.994-2.337 2.334-2.184ZM4.5 13.3c.705.088 1.39.284 2.072.478l.441.125c1.096.305 2.334.598 3.987.598 1.794 0 2.28-.223 2.528-.549.147-.193.276-.505.394-1.07.105-.502.188-1.124.295-1.93l.04-.3c.25-1.882.189-2.933-.068-3.497a.921.921 0 0 0-.442-.48c-.208-.104-.52-.174-.997-.174H11c-.686 0-1.295-.577-1.206-1.336.023-.192.05-.39.076-.586.065-.488.13-.97.13-1.328 0-.809-.144-1.15-.288-1.316-.137-.158-.402-.304-1.048-.378C8.357 1.521 8 1.793 8 2.25v.5c0 1.922-.978 3.128-1.933 3.825a5.831 5.831 0 0 1-1.567.81ZM2.75 6.5h-1a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h1a.25.25 0 0 0 .25-.25v-7.5a.25.25 0 0 0-.25-.25Z"></path>
+        </svg>
+    </button>
+    <button class="dislike-btn" onclick="submitFeedbackForm(0)">
+        <svg aria-hidden="true" focusable="false" class="" viewBox="0 0 16 16" width="16" height="16" fill="currentColor" style="display:inline-block;user-select:none;vertical-align:text-bottom;overflow:visible">
+            <path d="M7.083 15.986c-.763-.087-1.499-.295-2.011-.884-.504-.581-.655-1.378-.655-2.299 0-.468.087-1.12.157-1.638l.015-.112H3.167c-.603 0-1.174-.086-1.669-.334a2.415 2.415 0 0 1-1.136-1.2c-.454-.998-.438-2.447-.188-4.316l.04-.306C.32 4.108.41 3.424.526 2.864c.132-.63.316-1.209.669-1.672C1.947.205 3.211.053 4.917.053c1.848 0 3.234.332 4.388.652l.474.133c.658.187 1.201.341 1.726.415a1.75 1.75 0 0 1 1.662-1.2h1c.966 0 1.75.784 1.75 1.75v7.5a1.75 1.75 0 0 1-1.75 1.75h-1a1.75 1.75 0 0 1-1.514-.872c-.259.105-.59.268-.919.508-.671.491-1.317 1.285-1.317 2.614v.5c0 1.201-.994 2.336-2.334 2.183Zm4.334-13.232c-.706-.089-1.39-.284-2.072-.479l-.441-.125c-1.096-.304-2.335-.597-3.987-.597-1.794 0-2.28.222-2.529.548-.147.193-.275.505-.393 1.07-.105.502-.188 1.124-.295 1.93l-.04.3c-.25 1.882-.19 2.933.067 3.497a.923.923 0 0 0 .443.48c.208.104.52.175.997.175h1.75c.685 0 1.295.577 1.205 1.335-.022.192-.049.39-.075.586-.066.488-.13.97-.13 1.329 0 .808.144 1.15.288 1.316.137.157.401.303 1.048.377.307.035.664-.237.664-.693v-.5c0-1.922.978-3.127 1.932-3.825a5.878 5.878 0 0 1 1.568-.809Zm1.75 6.798h1a.25.25 0 0 0 .25-.25v-7.5a.25.25 0 0 0-.25-.25h-1a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25Z"></path>
+        </svg>
+    </button>
+</p>
+
+<div class="expand-feedback-content" id="expandContentLike">
+    <ul style="text-align:center">
+        <li>Thank you! We received your feedback.</li>
+        <li>If you have any comments, fill in <a href='https://www.espressif.com/en/company/documents/documentation_feedback?docId=4287&sections=System (migration-guides/release-6.x/6.0/system)&version=esp32 latest (master)'>Espressif Documentation Feedback Form</a>.</li>
+    </ul>
+</div>
+
+<div class="expand-feedback-content" id="expandContent">
+    <ul style="text-align:center">
+        <li>We value your feedback.</li>
+        <li>Let us know how we can improve this page by filling in <a href='https://www.espressif.com/en/company/documents/documentation_feedback?docId=4287&sections=System (migration-guides/release-6.x/6.0/system)&version=esp32 latest (master)'>Espressif Documentation Feedback Form</a>.</li>
+    </ul>
+</div>
+
+<br>
+
+
+             </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="tools.html" class="btn btn-neutral float-left" title="Tools" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="toolchain.html" class="btn btn-neutral float-right" title="Toolchain" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2016 - 2025, Espressif Systems (Shanghai) Co., Ltd.</p>
+  </div>
+
+  <ul class="footer">
+        <li>
+	    
+            
+            Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/espressif/sphinx_idf_theme">theme</a>  based on <a href="https://github.com/readthedocs/sphinx_rtd_theme">Read the Docs Sphinx Theme</a>.
+         </li>
+    <li class="footer-aside">
+        <a href="../../../esp-idf-en-latest.zip"> Download HTML</a>
+    </li>
+
+  </ul> 
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

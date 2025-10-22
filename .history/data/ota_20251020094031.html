@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OTA Updates - ESP32</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🔁 System Updates</h1>
+            <p class="subtitle">Upload firmware or filesystem images (optional backup)</p>
+        </header>
+
+        <main>
+            <!-- System Status Section -->
+            <div class="form-section">
+                <h2>� Current System Status</h2>
+                <div class="system-info">
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <label>Running Partition:</label>
+                            <span id="currentPartition">Loading...</span>
+                        </div>
+                        <div class="info-item">
+                            <label>Firmware Version:</label>
+                            <span id="firmwareVersion">Loading...</span>
+                        </div>
+                        <div class="info-item">
+                            <label>Available Space:</label>
+                            <span id="availableSpace">Loading...</span>
+                        </div>
+                        <div class="info-item">
+                            <label>Boot Count:</label>
+                            <span id="bootCount">Loading...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Backup Section -->
+            <div class="form-section backup-section">
+                <h2>�📦 Create Backup (Optional)</h2>
+                <p class="help-text">Download current firmware or filesystem before updating (recommended for recovery)</p>
+                <div class="ota-button-group">
+                    <button class="btn btn-secondary" onclick="downloadBackup('firmware')">
+                        📱 Download Firmware Backup
+                    </button>
+                    <button class="btn btn-secondary" onclick="downloadBackup('filesystem')">
+                        📁 Download Filesystem Backup
+                    </button>
+                </div>
+            </div>
+
+            <!-- Firmware Update Section -->
+            <div class="form-section upload-section">
+                <h2>📤 Firmware Update</h2>
+                <div class="file-drop-zone" id="firmwareDropZone" onclick="document.getElementById('firmwareFile').click()">
+                    <div class="drop-icon">📱</div>
+                    <div class="drop-text">Click to select firmware (.bin) file or drag and drop</div>
+                </div>
+                <input type="file" id="firmwareFile" accept=".bin" style="display: none;">
+                <input type="text" id="firmwareHash" placeholder="Expected SHA256 hash (optional for verification)">
+                
+                <div class="checkbox-container">
+                    <input type="checkbox" id="skipBackup">
+                    <span>Skip backup (I understand the risks)</span>
+                </div>
+                
+                <div class="ota-button-group">
+                    <button class="btn btn-primary" onclick="uploadFirmware()">🚀 Upload Firmware</button>
+                    <button class="btn btn-secondary" onclick="clearFirmwareSelection()">🗑️ Clear</button>
+                </div>
+                
+                <div id="firmwareProgress" class="upload-progress">
+                    <div class="upload-spinner"></div>
+                    <div class="upload-text">Uploading firmware...</div>
+                </div>
+                <div class="progress-bar" id="firmwareProgressBar"></div>
+            </div>
+
+            <!-- Filesystem Update Section -->
+            <div class="form-section upload-section">
+                <h2>📁 Filesystem Update</h2>
+                <div class="file-drop-zone" id="filesystemDropZone" onclick="document.getElementById('fsFile').click()">
+                    <div class="drop-icon">📁</div>
+                    <div class="drop-text">Click to select filesystem image or drag and drop</div>
+                </div>
+                <input type="file" id="fsFile" style="display: none;">
+                
+                <div class="checkbox-container">
+                    <input type="checkbox" id="skipBackupFs">
+                    <span>Skip backup (I understand the risks)</span>
+                </div>
+                
+                <div class="ota-button-group">
+                    <button class="btn btn-primary" onclick="uploadFilesystem()">🚀 Upload Filesystem</button>
+                    <button class="btn btn-secondary" onclick="clearFilesystemSelection()">🗑️ Clear</button>
+                </div>
+                
+                <div id="fsProgress" class="upload-progress">
+                    <div class="upload-spinner"></div>
+                    <div class="upload-text">Uploading filesystem...</div>
+                </div>
+                <div class="progress-bar" id="fsProgressBar"></div>
+            </div>
+
+            <!-- Status Messages -->
+            <div id="statusMessage" class="status-message" style="display:none;"></div>
+        </main>
+
+        <footer>
+            <p>ESP32 OTA Update Portal</p>
+        </footer>
+    </div>
+
+    <script src="scripts.js"></script>
+    <script>
+    async function downloadBackup(type) {
+        try {
+            const resp = await fetch('/api/ota?backup=' + type);
+            if (!resp.ok) throw new Error('Backup not available');
+            const blob = await resp.blob();
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `esp32_${type}_backup.bin`;
+            a.click();
+            URL.revokeObjectURL(url);
+            showStatus('Backup downloaded', 'success');
+        } catch (e) {
+            showStatus('Backup failed: ' + e.message, 'error');
+        }
+    }
+
+    async function uploadFirmware() {
+        const file = document.getElementById('firmwareFile').files[0];
+        const skip = document.getElementById('skipBackup').checked;
+        const hash = document.getElementById('firmwareHash').value.trim();
+        if (!file) { showStatus('Select a firmware file', 'error'); return; }
+        const form = new FormData();
+        form.append('type', 'firmware');
+        form.append('skipBackup', skip ? '1' : '0');
+        if (hash) form.append('hash', hash);
+        form.append('file', file);
+
+        const resp = await fetch('/api/ota', { method: 'POST', body: form });
+        const json = await resp.json();
+        if (json && json.status === 'ok') showStatus('Firmware uploaded, processing', 'success');
+        else showStatus('Upload failed', 'error');
+    }
+
+    async function uploadFilesystem() {
+        const file = document.getElementById('fsFile').files[0];
+        const skip = document.getElementById('skipBackupFs').checked;
+        if (!file) { showStatus('Select a filesystem image', 'error'); return; }
+        const form = new FormData();
+        form.append('type', 'filesystem');
+        form.append('skipBackup', skip ? '1' : '0');
+        form.append('file', file);
+
+        const resp = await fetch('/api/ota', { method: 'POST', body: form });
+        const json = await resp.json();
+        if (json && json.status === 'ok') showStatus('Filesystem uploaded, processing', 'success');
+        else showStatus('Upload failed', 'error');
+    }
+
+    function showStatus(msg, level) {
+        const el = document.getElementById('statusMessage');
+        el.style.display = 'block';
+        el.textContent = msg;
+        el.className = 'status-message ' + level;
+    }
+    </script>
+</body>
+</html>

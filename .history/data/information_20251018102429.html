@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>System Information - ESP32 Portal</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📊 System Information</h1>
+            <p class="subtitle">Real-time system metrics and hardware information</p>
+            <nav>
+                <a href="index.html" class="nav-link">🏠 Home</a>
+                <a href="configuration.html" class="nav-link">⚙️ Configuration</a>
+            </nav>
+        </header>
+
+        <main>
+            <!-- Control Panel -->
+            <div class="form-section">
+                <h2>🎛️ Display Controls</h2>
+                <div class="control-panel">
+                    <div class="form-group">
+                        <label class="checkbox-container">
+                            <input type="checkbox" id="autoRefresh" checked>
+                            <span class="checkmark"></span>
+                            Auto Refresh
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label for="refreshInterval">Refresh Interval (seconds):</label>
+                        <select id="refreshInterval" class="form-control">
+                            <option value="5">5 seconds</option>
+                            <option value="10" selected>10 seconds</option>
+                            <option value="30">30 seconds</option>
+                            <option value="60">60 seconds</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <button type="button" id="refreshNow" class="btn btn-primary">🔄 Refresh Now</button>
+                        <span id="lastUpdated" class="text-muted">Last updated: Never</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- System Performance & Resources -->
+            <div class="form-section">
+                <h2>⚡ Performance & Resources</h2>
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-icon">🚀</div>
+                        <div class="metric-content">
+                            <h4>CPU Frequency</h4>
+                            <div class="metric-value" id="metric-cpu-frequency">Loading...</div>
+                        </div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-icon">🌡️</div>
+                        <div class="metric-content">
+                            <h4>CPU Temperature</h4>
+                            <div class="metric-value" id="metric-cpu-temperature">Loading...</div>
+                        </div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-icon">💾</div>
+                        <div class="metric-content">
+                            <h4>Free Heap Memory</h4>
+                            <div class="metric-value" id="metric-free-heap">Loading...</div>
+                        </div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-icon">📉</div>
+                        <div class="metric-content">
+                            <h4>Min Free Heap</h4>
+                            <div class="metric-value" id="metric-min-free-heap">Loading...</div>
+                        </div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-icon">⏱️</div>
+                        <div class="metric-content">
+                            <h4>System Uptime</h4>
+                            <div class="metric-value" id="metric-uptime">Loading...</div>
+                        </div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-icon">🔄</div>
+                        <div class="metric-content">
+                            <h4>Reset Reason</h4>
+                            <div class="metric-value" id="metric-reset-reason">Loading...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Hardware Information -->
+            <div class="form-section">
+                <h2>🔧 Hardware Information</h2>
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-icon">🆔</div>
+                        <div class="metric-content">
+                            <h4>Chip ID</h4>
+                            <div class="metric-value" id="metric-chip-id">Loading...</div>
+                        </div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-icon">🏷️</div>
+                        <div class="metric-content">
+                            <h4>MAC Address</h4>
+                            <div class="metric-value" id="metric-mac-address">Loading...</div>
+                        </div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-icon">💽</div>
+                        <div class="metric-content">
+                            <h4>Flash Size</h4>
+                            <div class="metric-value" id="metric-flash-size">Loading...</div>
+                        </div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-icon">🔢</div>
+                        <div class="metric-content">
+                            <h4>Chip Revision</h4>
+                            <div class="metric-value" id="metric-chip-revision">Loading...</div>
+                        </div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-icon">⚙️</div>
+                        <div class="metric-content">
+                            <h4>CPU Cores</h4>
+                            <div class="metric-value" id="metric-core-count">Loading...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Network & Connectivity -->
+            <div class="form-section">
+                <h2>🌐 Network & Connectivity</h2>
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-icon">📶</div>
+                        <div class="metric-content">
+                            <h4>WiFi Signal (RSSI)</h4>
+                            <div class="metric-value" id="metric-wifi-rssi">Loading...</div>
+                        </div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-icon">📡</div>
+                        <div class="metric-content">
+                            <h4>WiFi TX Power</h4>
+                            <div class="metric-value" id="metric-wifi-tx-power">Loading...</div>
+                        </div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-icon">🌍</div>
+                        <div class="metric-content">
+                            <h4>IP Address</h4>
+                            <div class="metric-value" id="metric-ip-address">Loading...</div>
+                        </div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-icon">📊</div>
+                        <div class="metric-content">
+                            <h4>WiFi Status</h4>
+                            <div class="metric-value" id="metric-wifi-status">Loading...</div>
+                        </div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-icon">🔗</div>
+                        <div class="metric-content">
+                            <h4>Network Speed</h4>
+                            <div class="metric-value" id="metric-network-speed">Loading...</div>
+                        </div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-icon">📈</div>
+                        <div class="metric-content">
+                            <h4>Data Transfer</h4>
+                            <div class="metric-value" id="metric-wifi-tx-rx-bytes">Loading...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Storage & File System -->
+            <div class="form-section">
+                <h2>💾 Storage & File System</h2>
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-icon">💿</div>
+                        <div class="metric-content">
+                            <h4>Flash Usage</h4>
+                            <div class="metric-value" id="metric-flash-usage">Loading...</div>
+                        </div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-icon">📁</div>
+                        <div class="metric-content">
+                            <h4>SPIFFS Usage</h4>
+                            <div class="metric-value" id="metric-spiffs-usage">Loading...</div>
+                        </div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-icon">🔄</div>
+                        <div class="metric-content">
+                            <h4>Flash R/W Operations</h4>
+                            <div class="metric-value" id="metric-flash-rw-operations">Loading...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Task & Runtime Information -->
+            <div class="form-section">
+                <h2>📋 Tasks & Runtime</h2>
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-icon">📊</div>
+                        <div class="metric-content">
+                            <h4>Task Count</h4>
+                            <div class="metric-value" id="metric-task-count">Loading...</div>
+                        </div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-icon">📈</div>
+                        <div class="metric-content">
+                            <h4>Task Stack HWM</h4>
+                            <div class="metric-value" id="metric-task-stack-hwm">Loading...</div>
+                        </div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-icon">⚡</div>
+                        <div class="metric-content">
+                            <h4>Task Priority</h4>
+                            <div class="metric-value" id="metric-task-priority">Loading...</div>
+                        </div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-icon">🔋</div>
+                        <div class="metric-content">
+                            <h4>Power Mode</h4>
+                            <div class="metric-value" id="metric-power-mode">Loading...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Application Statistics -->
+            <div class="form-section">
+                <h2>📱 Application Statistics</h2>
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-icon">🚀</div>
+                        <div class="metric-content">
+                            <h4>Boot Count</h4>
+                            <div class="metric-value" id="metric-boot-count">Loading...</div>
+                        </div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-icon">💥</div>
+                        <div class="metric-content">
+                            <h4>Crash Count</h4>
+                            <div class="metric-value" id="metric-crash-count">Loading...</div>
+                        </div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-icon">🔄</div>
+                        <div class="metric-content">
+                            <h4>OTA Update Status</h4>
+                            <div class="metric-value" id="metric-ota-update-status">Loading...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <p>&copy; 2025 ESP32 Captive Portal | System Information Dashboard</p>
+        </footer>
+    </div>
+
+    <script src="scripts.js"></script>
+    <script>
+        // System Information Page JavaScript
+        let refreshTimer = null;
+        let isRefreshing = false;
+
+        // Metric mappings for API calls
+        const metricMappings = {
+            'metric-cpu-frequency': 0,      // METRIC_CPU_FREQUENCY
+            'metric-cpu-temperature': 1,    // METRIC_CPU_TEMPERATURE
+            'metric-free-heap': 2,          // METRIC_FREE_HEAP
+            'metric-min-free-heap': 3,      // METRIC_MIN_FREE_HEAP
+            'metric-uptime': 4,             // METRIC_UPTIME
+            'metric-reset-reason': 5,       // METRIC_RESET_REASON
+            'metric-task-priority': 7,      // METRIC_TASK_PRIORITY
+            'metric-power-mode': 8,         // METRIC_POWER_MODE
+            'metric-wifi-rssi': 13,         // METRIC_WIFI_RSSI
+            'metric-wifi-tx-power': 14,     // METRIC_WIFI_TX_POWER
+            'metric-wifi-tx-rx-bytes': 15,  // METRIC_WIFI_TX_RX_BYTES
+            'metric-ip-address': 16,        // METRIC_IP_ADDRESS
+            'metric-wifi-status': 17,       // METRIC_WIFI_STATUS
+            'metric-network-speed': 18,     // METRIC_NETWORK_SPEED
+            'metric-flash-usage': 21,       // METRIC_FLASH_USAGE
+            'metric-flash-rw-operations': 22, // METRIC_FLASH_RW_OPERATIONS
+            'metric-spiffs-usage': 23,      // METRIC_SPIFFS_USAGE
+            'metric-chip-id': 27,           // METRIC_CHIP_ID
+            'metric-mac-address': 28,       // METRIC_MAC_ADDRESS
+            'metric-flash-size': 29,        // METRIC_FLASH_SIZE
+            'metric-chip-revision': 30,     // METRIC_CHIP_REVISION
+            'metric-core-count': 31,        // METRIC_CORE_COUNT
+            'metric-task-count': 32,        // METRIC_TASK_COUNT
+            'metric-task-stack-hwm': 33,    // METRIC_TASK_STACK_HWM
+            'metric-boot-count': 34,        // METRIC_BOOT_COUNT
+            'metric-crash-count': 34,       // METRIC_CRASH_COUNT
+            'metric-ota-update-status': 35  // METRIC_OTA_UPDATE_STATUS
+        };
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeControls();
+            refreshMetrics();
+            setupAutoRefresh();
+        });
+
+        function initializeControls() {
+            const autoRefreshCheckbox = document.getElementById('autoRefresh');
+            const refreshInterval = document.getElementById('refreshInterval');
+            const refreshButton = document.getElementById('refreshNow');
+
+            autoRefreshCheckbox.addEventListener('change', setupAutoRefresh);
+            refreshInterval.addEventListener('change', setupAutoRefresh);
+            refreshButton.addEventListener('click', function() {
+                refreshMetrics();
+            });
+        }
+
+        function setupAutoRefresh() {
+            // Clear existing timer
+            if (refreshTimer) {
+                clearInterval(refreshTimer);
+                refreshTimer = null;
+            }
+
+            const autoRefresh = document.getElementById('autoRefresh').checked;
+            const interval = parseInt(document.getElementById('refreshInterval').value) * 1000;
+
+            if (autoRefresh) {
+                refreshTimer = setInterval(refreshMetrics, interval);
+            }
+        }
+
+        async function refreshMetrics() {
+            if (isRefreshing) return;
+            isRefreshing = true;
+
+            try {
+                const promises = Object.entries(metricMappings).map(async ([elementId, metricId]) => {
+                    try {
+                        const response = await fetch(`/get_metric?id=${metricId}`);
+                        const data = await response.json();
+                        
+                        const element = document.getElementById(elementId);
+                        if (element) {
+                            if (data.status === 'ok') {
+                                element.textContent = data.value;
+                                element.className = 'metric-value';
+                            } else {
+                                element.textContent = getUnavailableMessage(metricId);
+                                element.className = 'metric-value unavailable';
+                            }
+                        }
+                    } catch (error) {
+                        console.error(`Error fetching metric ${metricId}:`, error);
+                        const element = document.getElementById(elementId);
+                        if (element) {
+                            element.textContent = 'Error loading data';
+                            element.className = 'metric-value error';
+                        }
+                    }
+                });
+
+                await Promise.all(promises);
+                
+                // Update last refresh time
+                document.getElementById('lastUpdated').textContent = 
+                    `Last updated: ${new Date().toLocaleTimeString()}`;
+
+            } catch (error) {
+                console.error('Error refreshing metrics:', error);
+                showStatus('Failed to refresh system metrics', 'error');
+            } finally {
+                isRefreshing = false;
+            }
+        }
+
+        function getUnavailableMessage(metricId) {
+            const unavailableMessages = {
+                1: 'Unavailable - ESP32 does not have built-in temperature sensor',
+                9: 'Unavailable - Light sleep not active',
+                10: 'Unavailable - Deep sleep not active', 
+                11: 'Unavailable - VDD33 voltage measurement not configured',
+                12: 'Unavailable - External current sensor not connected',
+                17: 'Unavailable - Bluetooth not enabled',
+                18: 'Unavailable - No Bluetooth devices connected',
+                22: 'Unavailable - I2C not initialized',
+                23: 'Unavailable - SPI performance monitoring not available',
+                24: 'Unavailable - GPIO monitoring not configured',
+                36: 'Unavailable - No firmware update performed',
+                37: 'Unavailable - Application timers not configured'
+            };
+
+            return unavailableMessages[metricId] || 'Unavailable - Feature not supported';
+        }
+
+        // Cleanup on page unload
+        window.addEventListener('beforeunload', function() {
+            if (refreshTimer) {
+                clearInterval(refreshTimer);
+            }
+        });
+    </script>
+</body>
+</html>

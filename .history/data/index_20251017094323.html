@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>ESP32 Captive Portal</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🌐 ESP32 Captive Portal</h1>
+            <p class="subtitle">Welcome to your ESP32 device management portal</p>
+        </header>
+
+        <main>
+            <!-- Welcome Section -->
+            <div class="form-section">
+                <h2>📱 Device Status</h2>
+                <div class="system-info">
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <label>Device:</label>
+                            <span>ESP32 Development Board</span>
+                        </div>
+                        <div class="info-item">
+                            <label>Status:</label>
+                            <span class="status-online">🟢 Online</span>
+                        </div>
+                        <div class="info-item">
+                            <label>WiFi Mode:</label>
+                            <span>Access Point</span>
+                        </div>
+                        <div class="info-item">
+                            <label>IP Address:</label>
+                            <span>192.168.4.1</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Navigation Section -->
+            <div class="form-section">
+                <h2>⚙️ Configuration Options</h2>
+                <div class="nav-grid">
+                    <a href="configuration.html" class="nav-card">
+                        <div class="nav-icon">🔧</div>
+                        <h3>Device Configuration</h3>
+                        <p>Configure network settings, MAC addresses, and encryption keys</p>
+                    </a>
+                    
+                    <div class="nav-card disabled">
+                        <div class="nav-icon">📊</div>
+                        <h3>System Monitor</h3>
+                        <p>View system statistics and performance metrics</p>
+                        <span class="coming-soon">Coming Soon</span>
+                    </div>
+                    
+                    <div class="nav-card disabled">
+                        <div class="nav-icon">🔐</div>
+                        <h3>Security Settings</h3>
+                        <p>Manage security policies and access controls</p>
+                        <span class="coming-soon">Coming Soon</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Info Section -->
+            <div class="form-section">
+                <h2>ℹ️ Quick Information</h2>
+                <div class="info-cards">
+                    <div class="info-card">
+                        <h4>🔗 Connection</h4>
+                        <p>You are connected to the ESP32 access point. Configure your device settings using the options above.</p>
+                    </div>
+                    <div class="info-card">
+                        <h4>⚡ Power Status</h4>
+                        <p>Device is running on external power. All systems operational.</p>
+                    </div>
+                    <div class="info-card">
+                        <h4>📡 Network</h4>
+                        <p>Broadcasting WiFi network "ESP32WebServer" for device configuration.</p>
+                    </div>
+                </div>
+            </div>
+                <div class="form-section">
+                    <h2>📡 Network Configuration</h2>
+                    
+                    <div class="form-group">
+                        <label for="macAddress">Target MAC Address</label>
+                        <input 
+                            type="text" 
+                            id="macAddress" 
+                            name="macAddress" 
+                            placeholder="AA:BB:CC:DD:EE:FF"
+                            pattern="^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$"
+                            title="Please enter a valid MAC address (e.g., AA:BB:CC:DD:EE:FF)"
+                        >
+                        <span class="help-text">MAC address of the target device for ESP-NOW communication</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="ipAddress">Target IP Address</label>
+                        <input 
+                            type="text" 
+                            id="ipAddress" 
+                            name="ipAddress" 
+                            placeholder="192.168.1.100"
+                            pattern="^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$"
+                            title="Please enter a valid IP address (e.g., 192.168.1.100)"
+                        >
+                        <span class="help-text">IP address of the target device</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">WiFi Access Point Password</label>
+                        <input 
+                            type="password" 
+                            id="password" 
+                            name="password" 
+                            placeholder="Enter WiFi password"
+                            minlength="8"
+                            maxlength="63"
+                            title="Password must be 8-63 characters long"
+                        >
+                        <span class="help-text">Password for this ESP32's WiFi Access Point (8-63 characters)</span>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h2>🔐 ESP-NOW Encryption Keys</h2>
+                    
+                    <div class="form-group">
+                        <label for="activeKey">Active Encryption Key</label>
+                        <input 
+                            type="text" 
+                            id="activeKey" 
+                            name="activeKey" 
+                            placeholder="32 hex characters (16 bytes)"
+                            pattern="^[0-9A-Fa-f]{32}$"
+                            maxlength="32"
+                            title="Please enter exactly 32 hexadecimal characters"
+                        >
+                        <span class="help-text">Current active 16-byte encryption key (32 hex characters)</span>
+                        <button type="button" class="generate-key-btn" onclick="generateKey('activeKey')">🎲 Generate Random Key</button>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="pendingKey">Pending Encryption Key</label>
+                        <input 
+                            type="text" 
+                            id="pendingKey" 
+                            name="pendingKey" 
+                            placeholder="32 hex characters (16 bytes)"
+                            pattern="^[0-9A-Fa-f]{32}$"
+                            maxlength="32"
+                            title="Please enter exactly 32 hexadecimal characters"
+                        >
+                        <span class="help-text">Next rotation 16-byte encryption key (32 hex characters)</span>
+                        <button type="button" class="generate-key-btn" onclick="generateKey('pendingKey')">🎲 Generate Random Key</button>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" id="loadConfigBtn" class="btn btn-secondary">📥 Load Current Config</button>
+                    <button type="submit" id="saveConfigBtn" class="btn btn-primary">💾 Save Configuration</button>
+                </div>
+            </form>
+
+            <!-- Current Configuration Display -->
+            <div class="current-config">
+                <h2>📊 Current Configuration</h2>
+                <div id="currentConfigData" class="config-data">
+                    <p>Click "Load Current Config" to view stored settings</p>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <p>ESP32 Access Point Configuration Portal</p>
+            <p>Author: John Devine &lt;john.h.devine@gmail.com&gt;</p>
+            <div class="device-info">
+                <span>Device IP: 192.168.4.1</span> | 
+                <span id="connectionStatus">Connected</span>
+            </div>
+        </footer>
+    </div>
+
+    <script src="scripts.js"></script>
+</body>
+</html>

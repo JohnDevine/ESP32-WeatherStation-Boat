@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OTA Updates - ESP32</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🔁 System Updates</h1>
+            <p class="subtitle">Upload firmware or filesystem images (optional backup)</p>
+        </header>
+
+        <main>
+            <div class="form-section">
+                <h2>📦 Backup (optional)</h2>
+                <p class="help-text">Download current firmware or filesystem before updating (recommended)</p>
+                <button class="btn btn-secondary" onclick="downloadBackup('firmware')">Download Firmware Backup</button>
+                <button class="btn btn-secondary" onclick="downloadBackup('filesystem')">Download Filesystem Backup</button>
+            </div>
+
+            <div class="form-section">
+                <h2>📤 Firmware Update</h2>
+                <input type="file" id="firmwareFile" accept=".bin">
+                <input type="text" id="firmwareHash" placeholder="Expected SHA256 hash (optional)">
+                <label><input type="checkbox" id="skipBackup"> Skip backup (dangerous)</label>
+                <button class="btn btn-primary" onclick="uploadFirmware()">Upload Firmware</button>
+                <div id="firmwareProgress" class="progress-bar" style="display:none;"></div>
+            </div>
+
+            <div class="form-section">
+                <h2>📁 Filesystem Update</h2>
+                <input type="file" id="fsFile">
+                <label><input type="checkbox" id="skipBackupFs"> Skip backup (dangerous)</label>
+                <button class="btn btn-primary" onclick="uploadFilesystem()">Upload Filesystem</button>
+                <div id="fsProgress" class="progress-bar" style="display:none;"></div>
+            </div>
+
+            <div id="statusMessage" class="status-message" style="display:none;"></div>
+        </main>
+
+        <footer>
+            <p>ESP32 OTA Update Portal</p>
+        </footer>
+    </div>
+
+    <script src="scripts.js"></script>
+    <script>
+    async function downloadBackup(type) {
+        try {
+            const resp = await fetch('/api/ota?backup=' + type);
+            if (!resp.ok) throw new Error('Backup not available');
+            const blob = await resp.blob();
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `esp32_${type}_backup.bin`;
+            a.click();
+            URL.revokeObjectURL(url);
+            showStatus('Backup downloaded', 'success');
+        } catch (e) {
+            showStatus('Backup failed: ' + e.message, 'error');
+        }
+    }
+
+    async function uploadFirmware() {
+        const file = document.getElementById('firmwareFile').files[0];
+        const skip = document.getElementById('skipBackup').checked;
+        const hash = document.getElementById('firmwareHash').value.trim();
+        if (!file) { showStatus('Select a firmware file', 'error'); return; }
+        const form = new FormData();
+        form.append('type', 'firmware');
+        form.append('skipBackup', skip ? '1' : '0');
+        if (hash) form.append('hash', hash);
+        form.append('file', file);
+
+        const resp = await fetch('/api/ota', { method: 'POST', body: form });
+        const json = await resp.json();
+        if (json && json.status === 'ok') showStatus('Firmware uploaded, processing', 'success');
+        else showStatus('Upload failed', 'error');
+    }
+
+    async function uploadFilesystem() {
+        const file = document.getElementById('fsFile').files[0];
+        const skip = document.getElementById('skipBackupFs').checked;
+        if (!file) { showStatus('Select a filesystem image', 'error'); return; }
+        const form = new FormData();
+        form.append('type', 'filesystem');
+        form.append('skipBackup', skip ? '1' : '0');
+        form.append('file', file);
+
+        const resp = await fetch('/api/ota', { method: 'POST', body: form });
+        const json = await resp.json();
+        if (json && json.status === 'ok') showStatus('Filesystem uploaded, processing', 'success');
+        else showStatus('Upload failed', 'error');
+    }
+
+    function showStatus(msg, level) {
+        const el = document.getElementById('statusMessage');
+        el.style.display = 'block';
+        el.textContent = msg;
+        el.className = 'status-message ' + level;
+    }
+    </script>
+</body>
+</html>

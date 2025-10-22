@@ -1,0 +1,227 @@
+# ESP32 Style / Copilot Context & Project Settings
+
+## 1. Project Settings
+- **Project Type:** ESP32  
+- **Framework:** ESP-IDF (specify version, e.g., 5.1)  
+- **Build System:** PlatformIO  
+- **Version Control:** Git  
+- **Author Name:** John Devine  
+- **Author Email:** john.h.devine@gmail.com  
+
+## 2. Development Environment
+### Hardware
+- **Primary:** Mac mini M2, 16GB RAM, 512GB SSD  
+- **Mobile:** iPad M2 13-inch with Apple Pencil  
+
+### Software
+- **Editor:** Visual Studio Code  
+- **Extensions File:** MyProgrammingSetup/MyExtensions.txt  
+
+## 3. Coding Guidelines
+### File Structure
+- **Main File:** `main.c` with entry point `void app_main(void)`  
+- **Organization:**
+  - Prototypes at top of each file  
+  - Includes after prototypes  
+  - Constants and definitions after includes  
+  - Functions implemented after constants  
+  - `app_main` at bottom of the file  
+
+### Style
+- Indentation: 4 spaces, no tabs  
+- Naming conventions:
+  - Functions: `snake_case`  
+  - Constants: `UPPER_CASE`  
+  - Structs & Enums: `PascalCase`  
+- Function length: Prefer under 50 lines  
+- Comments: Use Doxygen-style for all functions  
+
+### Best Practices
+- Logging: Use `ESP_LOGI`, `ESP_LOGW`, `ESP_LOGE` instead of `printf`  
+- Error Handling: Use `ESP_ERROR_CHECK()` for all ESP-IDF API calls  
+- Memory Management: Prefer static allocation over dynamic (malloc)  
+- Concurrency: Use FreeRTOS primitives; keep ISRs minimal  
+- Testing: Unit tests with Unity framework  
+
+## 4. Directory Structure
+- `include/` → Header files (.h) with public APIs  
+- `src/` → Source files (.c) with implementation details  
+- `components/` → Optional reusable libraries  
+- `test/` → Unity test files  
+- `platformio.ini` → Build configuration  
+
+## 5. Code Organization
+- Main file should only contain entry-point logic (`app_main()`)  
+- Move functionality into separate `.c/.h` files under `src/` or `components/`  
+- Devices like sensors should have their own class  
+
+## 6. Examples
+### Code Structure
+```c
+// =============================
+// Function Prototypes
+// =============================
+static void init_gpio(void);
+static void wifi_connect(void);
+
+// =============================
+// Includes
+// =============================
+#include <stdio.h>
+#include "driver/gpio.h"
+#include "esp_wifi.h"
+
+// =============================
+// Constants & Definitions
+// =============================
+static const char *TAG = "MODULE_NAME";
+#define LED_GPIO GPIO_NUM_2
+
+// =============================
+// Function Definitions
+// =============================
+static void init_gpio(void) {
+    // Function implementation
+}
+```
+
+### Function Documentation (Doxygen)
+```c
+/**
+ * @brief Brief description of function
+ *
+ * @param param1 Description of first parameter
+ * @param param2 Description of second parameter
+ * @return Description of return value
+ */
+void example_function(int param1, bool param2);
+```
+
+### Logging Usage
+```c
+static const char *TAG = "WIFI";
+ESP_LOGI(TAG, "Connecting to WiFi...");
+ESP_LOGW(TAG, "Connection timeout, retrying...");
+ESP_LOGE(TAG, "Failed to connect, error=%d", err);
+```
+
+### Error Handling
+```c
+esp_err_t ret = nvs_flash_init();
+if (ret == ESP_ERR_NVS_NO_FREE_PAGES || ret == ESP_ERR_NVS_NEW_VERSION_FOUND) {
+    ESP_ERROR_CHECK(nvs_flash_erase());
+    ret = nvs_flash_init();
+}
+ESP_ERROR_CHECK(ret);
+```
+
+### PlatformIO Configuration (`platformio.ini`)
+```ini
+[env:esp32-devkit]
+platform = espressif32
+board = esp32dev
+framework = espidf
+monitor_speed = 115200
+monitor_filters = esp32_exception_decoder
+build_flags = 
+    -Wall
+    -Wextra
+    -Werror
+    -DDEBUG
+```
+
+## 7. Main File Template (`main.c`)
+```c
+/**
+ * @file main.c
+ * @brief Main application entry point
+ * @version 0.1
+ * @date 2025-08-22
+ */
+
+// =============================
+// Function Prototypes
+// =============================
+static void init_hardware(void);
+static void app_task(void *pvParameter);
+
+// =============================
+// Includes
+// =============================
+#include <stdio.h>
+#include "freertos/FreeRTOS.h"
+#include "freertos/task.h"
+#include "esp_system.h"
+#include "esp_log.h"
+#include "nvs_flash.h"
+
+// =============================
+// Constants & Definitions
+// =============================
+static const char *TAG = "MAIN";
+
+// =============================
+// Function Definitions
+// =============================
+static void init_hardware(void) {
+    esp_err_t ret = nvs_flash_init();
+    if (ret == ESP_ERR_NVS_NO_FREE_PAGES || ret == ESP_ERR_NVS_NEW_VERSION_FOUND) {
+        ESP_ERROR_CHECK(nvs_flash_erase());
+        ret = nvs_flash_init();
+    }
+    ESP_ERROR_CHECK(ret);
+    ESP_LOGI(TAG, "NVS initialized successfully");
+}
+
+static void app_task(void *pvParameter) {
+    while (1) {
+        ESP_LOGI(TAG, "Hello from app_task");
+        vTaskDelay(pdMS_TO_TICKS(1000));
+    }
+}
+
+// =============================
+// ESP-IDF Entry Point
+// =============================
+void app_main(void) {
+    ESP_LOGI(TAG, "Application starting...");
+
+    // Initialize hardware components
+    init_hardware();
+
+    // Create main application task
+    xTaskCreate(app_task, "app_task", 4096, NULL, 5, NULL);
+
+    ESP_LOGI(TAG, "Initialization complete");
+}
+```
+
+## 8. Quality Checklist
+- Headers at top of `.c` file  
+- Small, well-commented functions  
+- Use `ESP_LOGx` instead of `printf`  
+- Check all API calls with `ESP_ERROR_CHECK`  
+- Prefer static memory allocation  
+- Write unit tests for critical logic  
+- Enforce clean builds with `-Wall -Wextra -Werror`  
+
+## 9. VS Code Setup
+- Recommended Extensions:
+  - `platformio.platformio-ide`
+  - `ms-vscode.cpptools`
+  - `ms-vscode.cpptools-extension-pack`
+  - `ms-vscode.cmake-tools`
+  - `ms-vscode.makefile-tools`
+  - `betwo.vscode-doxygen-runner`
+  - `github.copilot`
+  - `github.copilot-chat`
+  - `eamodio.gitlens`
+  - `chrisdias.promptboost`
+  - `ms-azuretools.vscode-docker`
+- Theme Extension: `sdras.night-owl`
+
+# 9. Miscellaneous
+Make sure to  #include <stdbool.h> for bool type,
+add includes for ESP-IDF types,
+Function prototypes need to be after includes.
+

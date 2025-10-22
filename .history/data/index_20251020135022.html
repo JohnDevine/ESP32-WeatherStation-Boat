@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>ESP32 Captive Portal</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🌐 ESP32 Captive Portal</h1>
+            <p class="subtitle">Welcome to your ESP32 device management portal</p>
+        </header>
+
+        <main>
+            <!-- Welcome Section -->
+            <div class="form-section">
+                <h2>📱 Device Status</h2>
+                <div class="system-info">
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <label>Device:</label>
+                            <span>ESP32 Development Board</span>
+                        </div>
+                        <div class="info-item">
+                            <label>Status:</label>
+                            <span class="status-online">🟢 Online</span>
+                        </div>
+                        <div class="info-item">
+                            <label>WiFi Mode:</label>
+                            <span>Access Point</span>
+                        </div>
+                        <div class="info-item">
+                            <label>IP Address:</label>
+                            <span>192.168.4.1</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Navigation Section -->
+            <div class="form-section">
+                <h2>⚙️ Configuration Options</h2>
+                <div class="nav-grid">
+                    <a href="configuration.html" class="nav-card">
+                        <div class="nav-icon">🔧</div>
+                        <h3>Device Configuration</h3>
+                        <p>Configure network settings, MAC addresses, and encryption keys</p>
+                    </a>
+                    
+                    <a href="information.html" class="nav-card">
+                        <div class="nav-icon">📊</div>
+                        <h3>System Information</h3>
+                        <p>View system statistics, performance metrics, and hardware information</p>
+                    </a>
+                    
+                    <a href="ota.html" class="nav-card">
+                        <div class="nav-icon">🔁</div>
+                        <h3>System Updates</h3>
+                        <p>Upload firmware or filesystem images and manage OTA backups</p>
+                    </a>
+                    
+                    <div class="nav-card disabled">
+                        <div class="nav-icon">🔐</div>
+                        <h3>Security Settings</h3>
+                        <p>Manage security policies and access controls</p>
+                        <span class="coming-soon">Coming Soon</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Info Section -->
+            <div class="form-section">
+                <h2>ℹ️ Quick Information</h2>
+                <div class="info-cards">
+                    <div class="info-card">
+                        <h4>🔗 Connection</h4>
+                        <p>You are connected to the ESP32 access point. Configure your device settings using the options above.</p>
+                    </div>
+                    <div class="info-card">
+                        <h4>⚡ Power Status</h4>
+                        <p>Device is running on external power. All systems operational.</p>
+                    </div>
+                    <div class="info-card">
+                        <h4>📡 Network</h4>
+                        <p>Broadcasting WiFi network "ESP32WebServer" for device configuration.</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <p>&copy; 2025 ESP32 Captive Portal | Powered by ESP-IDF</p>
+        </footer>
+    </div>
+
+    <script src="scripts.js"></script>
+</body>
+</html>

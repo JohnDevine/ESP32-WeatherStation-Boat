@@ -1,0 +1,1 @@
+create a program to display a web page with a greeting "Gidday mate!". have it have one integer input field that is read into the backend main.c and the output if it is prime or not.

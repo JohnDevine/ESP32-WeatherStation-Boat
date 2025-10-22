@@ -1,0 +1,26 @@
+{
+  "name": "SystemMetrics",
+  "version": "1.0.0",
+  "description": "ESP32 System Metrics Library - Comprehensive system monitoring and telemetry",
+  "keywords": ["esp32", "metrics", "monitoring", "telemetry", "system"],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/JohnDevine/ESP32-WebServerCaptivePortal.git"
+  },
+  "authors": [
+    {
+      "name": "John Devine",
+      "email": "john.h.devine@gmail.com"
+    }
+  ],
+  "license": "MIT",
+  "frameworks": ["espidf"],
+  "platforms": ["espressif32"],
+  "build": {
+    "includeDir": "src",
+    "srcDir": "src"
+  },
+  "dependencies": {
+    "esp-idf": "^5.0.0"
+  }
+}
