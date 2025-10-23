@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Device Configuration - ESP32</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <nav style="text-align: left; margin-bottom: 1rem;">
+                <a href="index.html" class="nav-link home-button">🏠 Home</a>
+                <a href="information.html" class="nav-link">📊 Information</a>
+                <a href="ota.html" class="nav-link">🔁 Updates</a>
+            </nav>
+            <h1>🔧 ESP32 Device Configuration</h1>
+            <p class="subtitle">Configure your device settings and encryption keys</p>
+        </header>
+
+        <main>
+            <!-- Status Message -->
+            <div id="statusMessage" class="status-message" style="display: none;"></div>
+
+            <!-- Configuration Form -->
+            <form id="configForm" class="config-form">
+                <div class="form-section">
+                    <h2>📡 Network Configuration</h2>
+                    
+                    <div class="form-group">
+                        <label for="macAddress">Target MAC Address</label>
+                        <input 
+                            type="text" 
+                            id="macAddress" 
+                            name="macAddress" 
+                            placeholder="AA:BB:CC:DD:EE:FF"
+                            pattern="^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$"
+                            title="Please enter a valid MAC address (e.g., AA:BB:CC:DD:EE:FF)"
+                        >
+                        <span class="help-text">MAC address of the target device for ESP-NOW communication</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="ipAddress">Target IP Address</label>
+                        <input 
+                            type="text" 
+                            id="ipAddress" 
+                            name="ipAddress" 
+                            placeholder="192.168.1.100"
+                            pattern="^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$"
+                            title="Please enter a valid IP address (e.g., 192.168.1.100)"
+                        >
+                        <span class="help-text">IP address of the target device</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">Configuration Password</label>
+                        <input 
+                            type="password" 
+                            id="password" 
+                            name="password" 
+                            placeholder="Enter WiFi password"
+                            minlength="8"
+                            maxlength="63"
+                            title="Password must be 8-63 characters long"
+                        >
+                        <span class="help-text">Password for this ESP32's WiFi Access Point (8-63 characters)</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="bootCount">Boot Count</label>
+                        <input 
+                            type="number" 
+                            id="bootCount" 
+                            name="bootCount" 
+                            placeholder="0"
+                            min="0"
+                            max="4294967295"
+                            title="Number of times the device has booted (0-4294967295)"
+                        >
+                        <span class="help-text">Current boot count - can be reset or modified for testing</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="deviceRole">Device Role</label>
+                        <select id="deviceRole" name="deviceRole" title="Select the device role">
+                            <option value="1">Gateway</option>
+                            <option value="2">Responder/Node</option>
+                        </select>
+                        <span class="help-text">Device role determines whether this ESP32 acts as a Gateway or Responder/Node</span>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h2>🔐 ESP-NOW Encryption Keys</h2>
+                    
+                    <div class="form-group">
+                        <label for="activeKey">Active Encryption Key</label>
+                        <div class="input-with-button">
+                            <input 
+                                type="text" 
+                                id="activeKey" 
+                                name="activeKey" 
+                                placeholder="Enter 32-character hex key"
+                                pattern="^[0-9A-Fa-f]{32}$"
+                                maxlength="32"
+                                title="Please enter a 32-character hexadecimal key"
+                            >
+                                                    <button type="button" class="btn-inline" onclick="generateKey('activeKey')">Generate Random</button>
+                        </div>
+                        <span class="help-text">Current encryption key for ESP-NOW (32 hex characters)</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="pendingKey">Pending Encryption Key</label>
+                        <div class="input-with-button">
+                            <input 
+                                type="text" 
+                                id="pendingKey" 
+                                name="pendingKey" 
+                                placeholder="Enter 32-character hex key"
+                                pattern="^[0-9A-Fa-f]{32}$"
+                                maxlength="32"
+                                title="Please enter a 32-character hexadecimal key"
+                            >
+                                                    <button type="button" class="btn-inline" onclick="generateKey('pendingKey')">Generate Random</button>
+                        </div>
+                        <span class="help-text">Backup encryption key for ESP-NOW (32 hex characters)</span>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h2>🌉 Bridge WiFi and MQTT Access</h2>
+                    
+                    <div class="form-group">
+                        <label for="bridgeSsid">Bridge WiFi SSID</label>
+                        <input 
+                            type="text" 
+                            id="bridgeSsid" 
+                            name="bridgeSsid" 
+                            placeholder="MyBridgeWiFi"
+                            maxlength="31"
+                            title="WiFi network name for bridge connection"
+                        >
+                        <span class="help-text">WiFi network name that the gateway will connect to for internet access</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="bridgePassword">Bridge WiFi Password</label>
+                        <input 
+                            type="password" 
+                            id="bridgePassword" 
+                            name="bridgePassword" 
+                            placeholder="Enter bridge WiFi password"
+                            minlength="8"
+                            maxlength="63"
+                            title="Password must be 8-63 characters long"
+                        >
+                        <span class="help-text">Password for the bridge WiFi network (8-63 characters)</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="mqttServerIp">MQTT Server IP</label>
+                        <input 
+                            type="text" 
+                            id="mqttServerIp" 
+                            name="mqttServerIp" 
+                            placeholder="192.168.1.200"
+                            pattern="^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$"
+                            title="Please enter a valid IP address (e.g., 192.168.1.200)"
+                        >
+                        <span class="help-text">IP address of the MQTT broker server</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="mqttPort">MQTT Port</label>
+                        <input 
+                            type="number" 
+                            id="mqttPort" 
+                            name="mqttPort" 
+                            placeholder="1883"
+                            min="1"
+                            max="65535"
+                            value="1883"
+                            title="MQTT server port number (1-65535)"
+                        >
+                        <span class="help-text">Port number for MQTT broker connection (default: 1883)</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="mqttUsername">MQTT Username</label>
+                        <input 
+                            type="text" 
+                            id="mqttUsername" 
+                            name="mqttUsername" 
+                            placeholder="mqttuser"
+                            maxlength="31"
+                            title="MQTT authentication username"
+                        >
+                        <span class="help-text">Username for MQTT broker authentication</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="mqttPassword">MQTT Password</label>
+                        <input 
+                            type="password" 
+                            id="mqttPassword" 
+                            name="mqttPassword" 
+                            placeholder="Enter MQTT password"
+                            maxlength="63"
+                            title="MQTT authentication password"
+                        >
+                        <span class="help-text">Password for MQTT broker authentication</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="mqttClientId">MQTT Client ID</label>
+                        <input 
+                            type="text" 
+                            id="mqttClientId" 
+                            name="mqttClientId" 
+                            placeholder="ESP32WeatherStation"
+                            maxlength="31"
+                            title="Unique MQTT client identifier"
+                        >
+                        <span class="help-text">Unique identifier for this MQTT client connection</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="mqttQos">MQTT QoS Level</label>
+                        <select id="mqttQos" name="mqttQos" title="Select MQTT Quality of Service level">
+                            <option value="0">0 - At most once (fastest)</option>
+                            <option value="1">1 - At least once (balanced)</option>
+                            <option value="2">2 - Exactly once (most reliable)</option>
+                        </select>
+                        <span class="help-text">MQTT Quality of Service level for message delivery</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="mqttBaseTopic">MQTT Base Topic</label>
+                        <input 
+                            type="text" 
+                            id="mqttBaseTopic" 
+                            name="mqttBaseTopic" 
+                            placeholder="weatherstation"
+                            maxlength="63"
+                            title="Base topic for MQTT messages"
+                        >
+                        <span class="help-text">Base topic prefix for all MQTT messages (e.g., 'weatherstation')</span>
+                    </div>
+                </div>
+
+                <!-- Form Actions -->
+                <div class="form-actions">
+                    <button type="submit" id="saveConfigBtn" class="btn btn-primary">
+                        💾 Save Configuration
+                    </button>
+                    <button type="button" id="loadConfigBtn" class="btn btn-secondary">
+                        📄 Load Current Config
+                    </button>
+                    <button type="reset" id="resetBtn" class="btn btn-secondary">
+                        🔄 Reset Form
+                    </button>
+                </div>
+            </form>
+
+            <!-- Configuration Management -->
+            <div class="form-section">
+                <h2>🔧 Configuration Management</h2>
+                <div class="config-actions">
+                    <button class="btn btn-secondary" onclick="exportConfig()">
+                        📤 Export Configuration
+                    </button>
+                    <button class="btn btn-secondary" onclick="showImportDialog()">
+                        📥 Import Configuration
+                    </button>
+                    <button class="btn btn-warning" onclick="resetConfig()">
+                        🔄 Reset to Defaults
+                    </button>
+                </div>
+
+                <!-- Import Dialog (Hidden by default) -->
+                <div id="importDialog" class="import-dialog" style="display: none;">
+                    <h3>Import Configuration</h3>
+                    <textarea 
+                        id="importData" 
+                        placeholder="Paste configuration JSON data here..."
+                        rows="8"
+                        class="import-textarea"
+                    ></textarea>
+                    <div class="dialog-actions">
+                        <button class="btn btn-secondary" onclick="hideImportDialog()">Cancel</button>
+                        <button class="btn btn-primary" onclick="importConfig()">Import</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Status Messages -->
+            <div id="statusMessage" class="status-message" style="display: none;"></div>
+        </main>
+
+        <footer>
+            <p>ESP32 Advanced Configuration Portal</p>
+            <p>Author: John Devine &lt;john.h.devine@gmail.com&gt;</p>
+        </footer>
+    </div>
+
+    <script src="scripts.js"></script>
+    <script>
+        // Additional configuration page specific functions
+        function exportConfig() {
+            fetch('/get_config')
+                .then(response => response.json())
+                .then(data => {
+                    const configJson = JSON.stringify(data, null, 2);
+                    const blob = new Blob([configJson], { type: 'application/json' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'esp32_config.json';
+                    a.click();
+                    URL.revokeObjectURL(url);
+                    showStatus('Configuration exported successfully', 'success');
+                })
+                .catch(error => {
+                    console.error('Export error:', error);
+                    showStatus('Failed to export configuration', 'error');
+                });
+        }
+
+        function showImportDialog() {
+            document.getElementById('importDialog').style.display = 'block';
+        }
+
+        function hideImportDialog() {
+            document.getElementById('importDialog').style.display = 'none';
+            document.getElementById('importData').value = '';
+        }
+
+        function importConfig() {
+            const importData = document.getElementById('importData').value.trim();
+            if (!importData) {
+                showStatus('Please enter configuration data', 'error');
+                return;
+            }
+
+            try {
+                const config = JSON.parse(importData);
+                
+                // Populate form fields with imported data (don't save to NVS yet)
+                if (typeof populateForm === 'function') {
+                    populateForm(config);
+                } else {
+                    // Fallback: populate fields directly
+                    if (config.macAddress && document.getElementById('macAddress')) {
+                        document.getElementById('macAddress').value = config.macAddress;
+                    }
+                    if (config.ipAddress && document.getElementById('ipAddress')) {
+                        document.getElementById('ipAddress').value = config.ipAddress;
+                    }
+                    if (config.password && document.getElementById('password')) {
+                        document.getElementById('password').value = config.password;
+                    }
+                    if (config.activeKey && document.getElementById('activeKey')) {
+                        document.getElementById('activeKey').value = config.activeKey;
+                    }
+                    if (config.pendingKey && document.getElementById('pendingKey')) {
+                        document.getElementById('pendingKey').value = config.pendingKey;
+                    }
+                    if (config.bootCount !== undefined && document.getElementById('bootCount')) {
+                        document.getElementById('bootCount').value = config.bootCount;
+                    }
+                    if (config.deviceRole !== undefined && document.getElementById('deviceRole')) {
+                        document.getElementById('deviceRole').value = config.deviceRole;
+                    }
+                }
+                
+                showStatus('Configuration loaded into form. Click "Save Configuration" to apply changes.', 'info');
+                hideImportDialog();
+            } catch (error) {
+                showStatus('Invalid JSON format', 'error');
+            }
+        }
+
+        function resetConfig() {
+            if (confirm('Are you sure you want to reset all configuration to defaults? This action cannot be undone.')) {
+                const defaultConfig = {
+                    macAddress: '00:00:00:00:00:00',
+                    ipAddress: '192.168.1.100',
+                    password: '12345678',
+                    activeKey: '00000000000000000000000000000000',
+                    pendingKey: '00000000000000000000000000000000',
+                    bootCount: 0,
+                    deviceRole: 2
+                };
+
+                fetch('/save_config', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(defaultConfig)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        showStatus('Configuration reset to defaults', 'success');
+                    } else {
+                        showStatus('Failed to reset configuration', 'error');
+                    }
+                })
+                .catch(error => {
+                    console.error('Reset error:', error);
+                    showStatus('Failed to reset configuration', 'error');
+                });
+            }
+        }
+
+        // Load current config and populate form & status indicators on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch('/get_config')
+                .then(response => {
+                    if (!response.ok) throw new Error('Network response was not ok');
+                    return response.json();
+                })
+                .then(data => {
+                    // Populate the form fields
+                    if (window.ESP32Config && typeof window.ESP32Config.loadCurrentConfiguration === 'function') {
+                        // Use shared loader to ensure consistent behavior
+                        window.ESP32Config.loadCurrentConfiguration();
+                    } else {
+                        // Fallback: populate form directly
+                        if (typeof populateForm === 'function') {
+                            populateForm(data);
+                        }
+                        if (typeof updateCurrentConfigDisplay === 'function') {
+                            updateCurrentConfigDisplay(data);
+                        }
+                    }
+                })
+                .catch(error => {
+                    console.error('Failed to load config:', error);
+                });
+        });
+    </script>
+</body>
+</html>

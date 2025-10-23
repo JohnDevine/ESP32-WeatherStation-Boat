@@ -1,0 +1,3 @@
+ boost this prompt with the prompt boost tool. 
+ NOTE: use the prompts/ESP32_Style.md for coding style guidance.
+ Do not do anything yet, Show me what you propose to do.
